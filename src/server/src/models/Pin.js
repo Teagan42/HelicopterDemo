@@ -230,7 +230,7 @@ var updatePin = function(req, res, next) {
     var pinId = req.body[PIN_ID];
     var pinDirection = req.body[PIN_DIRECTION];
     var pinInterrupt = req.body[PIN_INTERRUPT];
-    var pinNumber = req.body.number;
+    var pinNumber = parseInt(req.body.number);
 
     if (!validatePinId(pinId, res)
         || (pinDirection && !validateDirection(pinDirection, res))
