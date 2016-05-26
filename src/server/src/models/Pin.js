@@ -10,6 +10,7 @@ var Pin = function (id, direction, interrupt, number) {
     var self = this;
 
     self.__gpio = new GPIO(number, direction, interrupt);
+    self.__gpio.writeSync(0);
     self.id = id;
     self.direction = direction;
     self.interrupt = interrupt;
