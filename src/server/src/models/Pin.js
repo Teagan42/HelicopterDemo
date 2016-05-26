@@ -4,7 +4,7 @@ var PIN_ID = 'id'
     , PIN_NUMBER = 'number'
     , WRITE_VALUE = 'value';
 var logger = require('../services/logger.js');
-//var GPIO = require('onoff').Gpio;
+var GPIO = require('onoff').Gpio;
 
 var Pin = function (id, direction, interrupt, number) {
     var self = this;
