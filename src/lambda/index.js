@@ -101,7 +101,7 @@ function onSessionEnded(sessionEndedRequest, session) {
 function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     var sessionAttributes = {};
-    var cardTitle = "Welcome";
+    var cardTitle = "Launch Pad";
     var speechOutput = "Welcome to the launch pad. " +
         "Initialize the launch pin before initiating launch.";
     // If the user either does not reply to the welcome message or says something that is not
@@ -128,7 +128,7 @@ function setPinInSession(intent, session, callback) {
     var speechOutput = "";
     var repromptText = "";
     var shouldEndSession = false;
-    var cardTitle = "CARD TITLE";
+    var title = "Ignition Pin";
 
     if (pinNumberSlot) {
         var pinNumber = pinNumberSlot.value;
@@ -156,6 +156,7 @@ function getPinNumberFromSession(intent, session, callback) {
     var sessionAttributes = {};
     var shouldEndSession = false;
     var speechOutput = "";
+    var title = "Retrieving Launch Pin";
 
     if (session.attributes) {
         pinNumber = session.attributes.pinNumber;
@@ -179,6 +180,7 @@ function launchHelicopter(intent, session, callback) {
     var repromptText = "";
     var speechOutput = "";
     var shouldEndSession = true;
+    var title = "Ignition";
 
     if (session.attributes) {
         pinNumber = session.attributes.pinNumber;
