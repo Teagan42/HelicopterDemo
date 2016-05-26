@@ -1,4 +1,5 @@
-var http = require('http');
+var https = require('https');
+var piAddress = '533abe39.ngrok.io';
 
 /**
  * Route incoming request based on type
@@ -132,16 +133,26 @@ function setPinInSession(intent, session, callback) {
 
     if (pinNumberSlot) {
         var pinNumber = pinNumberSlot.value;
-        sessionAttributes = createPinNumberAttributes(pinNumber);
-        speechOutput = "Pin " + pinNumber + " has been set for ignition.";
-        repromptText = "You can now launch the helicopter by saying, launch the helicopter";
+        sendPostRequest(piAddress, '/api/pin', {
+            "id": "launchPin",
+            "number": pinNumber,
+            "direction": "out"
+        }, function (data) {
+            console.log(data);
+            speechOutput = "Pin " + pinNumber + " has been set for ignition.";
+            repromptText = "You can now launch the helicopter by saying, launch the helicopter";
+            sessionAttributes = createPinNumberAttributes(pinNumber);
+            callback(sessionAttributes,
+                buildSpeechletResponse(title, speechOutput, repromptText, shouldEndSession));
+        }, function (err) {
+            piConnectionError(err, sessionAttributes, title, callback);
+        });
     } else {
         speechOutput = "That is not a valid pin number. Please try again.";
         repromptText = "That is not a valid pin number. You can set the pin number by saying, set the launch pin.";
+        callback(sessionAttributes,
+            buildSpeechletResponse(title, speechOutput, repromptText, shouldEndSession));
     }
-
-    callback(sessionAttributes,
-        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 function createPinNumberAttributes(pinNumber) {
@@ -172,7 +183,7 @@ function getPinNumberFromSession(intent, session, callback) {
     // If the user does not respond or says something that is not understood, the session
     // will end.
     callback(sessionAttributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+         buildSpeechletResponse(title, speechOutput, repromptText, shouldEndSession));
 }
 
 function launchHelicopter(intent, session, callback) {
@@ -187,18 +198,26 @@ function launchHelicopter(intent, session, callback) {
     }
 
     if (pinNumber) {
-        // TODO : Call Endpoint
-        speechOutput = "Launch initiated!";
-        repromptText = null;
-        shouldEndSession = true;
+        sendPostRequest(piAddress, '/api/pin/write', {
+            "id": "launchPin",
+            "value": 1
+        }, function (data) {
+            console.log(data);
+            speechOutput = "Launch initiated!";
+            repromptText = null;
+            shouldEndSession = true;
+            callback({},
+                buildSpeechletResponse(title, speechOutput, repromptText, shouldEndSession));
+        }, function (err) {
+            piConnectionError(err, sessionAttributes, title, callback);
+        });
     } else {
         speechOutput = "Please set the launch pin before launching.";
         repromptText = "Set the launch pin before launching by saying, set launch pin 4.";
         shouldEndSession = false;
+        callback({},
+            buildSpeechletResponse(title, speechOutput, repromptText, shouldEndSession));
     }
-
-    callback({},
-        buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
 }
 
 // --------------- Helpers that build all of the responses -----------------------
