@@ -222,6 +222,58 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     };
 }
 
+function sendPostRequest(host, endpoint, body, completedCallback, errorCallback) {
+    var messageString = JSON.stringify(body);
+
+    // Options and headers for the HTTP request
+    var options = {
+        host: host,
+        port: 443,
+        path: endpoint,
+        method: 'POST',
+        headers: {"content-type": "application/json"}
+    };
+
+    // Setup the HTTP request
+    var req = https.request(options, function (res) {
+
+        res.setEncoding('utf-8');
+
+        // Collect response data as it comes back.
+        var responseString = '';
+        res.on('data', function (data) {
+            responseString += data;
+        });
+
+        // Log the responce received from Twilio.
+        // Or could use JSON.parse(responseString) here to get at individual properties.
+        res.on('end', function () {
+            console.log('Response: ' + responseString);
+            completedCallback('API request sent successfully.');
+        });
+    });
+
+    // Handler for HTTP request errors.
+    req.on('error', function (e) {
+        console.error('HTTP error: ' + e.message);
+        errorCallback('API request completed with error(s).');
+    });
+
+    // Send the HTTP request to the Twilio API.
+    // Log the message we are sending to Twilio.
+    console.log('API call: ' + messageString);
+    req.write(messageString);
+    req.end();
+}
+
+function piConnectionError(err, sessionAttributes, title, callback) {
+    console.log(err);
+    var speechOutput = "There was an error connecting with the pi.";
+    var repromptText = "Unable to set the launch pin, please try again.";
+    callback(sessionAttributes,
+        buildSpeechletResponse(title, speechOutput, repromptText, false));
+}
+
 function buildResponse(sessionAttributes, speechletResponse) {
     return {
         version: "1.0",
