@@ -1,0 +1,28 @@
+{
+  "intents": [
+    {
+      "intent": "SetPinIntent",
+      "slots": [
+        {
+          "name": "PinNumber",
+          "type": "LIST_OF_PINNUMBERS"
+        }
+      ]
+    },
+    {
+      "intent": "GetPinIntent"
+    },
+    {
+      "intent": "LaunchHelicopterIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+SetPinIntent Set the launch pin to {PinNumber}
+SetPinIntent Initialize pin {PinNumber}
+SetPinIntent Configure pin {PinNumber}
+GetPinIntent What is the launch pin
+GetPinIntent Which pin is set
+LaunchHelicopterIntent Launch
+LaunchHelicopterIntent Fire
+LaunchHelicopterIntent Go Go Go
