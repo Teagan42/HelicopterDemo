@@ -9,7 +9,7 @@ var logger = require('../services/logger.js');
 var Pin = function (id, direction, interrupt, number) {
     var self = this;
 
-    //self.__gpio = new GPIO(number, direction, interrupt);
+    self.__gpio = new GPIO(number, direction, interrupt);
     self.id = id;
     self.direction = direction;
     self.interrupt = interrupt;
@@ -17,9 +17,8 @@ var Pin = function (id, direction, interrupt, number) {
 
     self.read = function () {
         var promise = new Promise(function (accept) {
-            var readVal = 0;
+            var readVal = self.__gpio.read();
             logger.debug('Reading pin: ' + readVal);
-            //self.__gpio.read()
             accept(readVal);
         });
 
@@ -29,9 +28,8 @@ var Pin = function (id, direction, interrupt, number) {
     self.write = function (writeVal) {
         var promise = new Promise(function (accept) {
             logger.debug('Writing pin: ' + writeVal);
-            //self.__gpio.write(writeVal, function () {
-                accept();
-            //});
+            self.__gpio.writeSync(writeVal);
+            accept();
         });
 
         return promise;
@@ -39,21 +37,21 @@ var Pin = function (id, direction, interrupt, number) {
 
     self.setDirection = function (direction) {
         logger.debug('Setting direction: ' + direction);
-        //self.__gpio.setDirection(direction);
+        self.__gpio.setDirection(direction);
     };
 
     self.setInterrupt = function (interrupt) {
         logger.debug('Setting interrupt: ' + interrupt);
-        //self.__gpio.setEdge(edge);
+        self.__gpio.setEdge(edge);
     };
 
     self.setNumber = function (number) {
         logger.debug('Setting pin number: ' + number);
         if (self.__gpio) {
-            //self.__gpio.unwatchAll();
+            self.__gpio.unwatchAll();
         }
 
-        //self.__gpio = new GPIO(number, direction, interrupt);
+        self.__gpio = new GPIO(number, direction, interrupt);
     };
 };
 
